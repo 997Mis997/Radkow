@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Wyniki Patrolów</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Special+Elite&family=Crimson+Pro:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{--noir:#0d0a06;--dark:#1a1410;--brown:#2c1f0e;--amber:#c8841a;--cream:#f2e8d5;--faded:#b8a888;--forest:#2d4a2d}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--dark);color:var(--cream);font-family:'Crimson Pro',Georgia,serif;min-height:100vh;padding:20px}
+  .container{max-width:600px;margin:0 auto}
+  #lock{text-align:center;padding-top:80px}
+  .icon{font-size:48px;display:block;margin-bottom:16px}
+  h1{font-family:'Bebas Neue',sans-serif;font-size:48px;letter-spacing:3px;color:var(--amber);margin-bottom:8px}
+  .sub{font-family:'Special Elite',monospace;font-size:11px;letter-spacing:3px;color:var(--faded);text-transform:uppercase;margin-bottom:32px}
+  .lbl{font-family:'Special Elite',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--amber);display:block;margin-bottom:8px;text-align:left}
+  input{width:100%;background:var(--noir);border:1px solid rgba(200,132,26,0.4);color:var(--cream);font-family:'Special Elite',monospace;font-size:16px;padding:14px 18px;outline:none;margin-bottom:8px}
+  input:focus{border-color:var(--amber)}
+  .btn{width:100%;background:var(--amber);color:var(--noir);border:none;font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;padding:14px;cursor:pointer}
+  .btn:hover{background:#d4a017}
+  .err{color:#c44;font-family:'Special Elite',monospace;font-size:12px;margin-top:8px;display:none;text-align:center}
+  #panel{display:none}
+  .panel-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid rgba(200,132,26,0.2)}
+  .panel-title{font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:3px;color:var(--amber)}
+  .refresh-btn{background:var(--forest);color:var(--cream);border:none;font-family:'Special Elite',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;padding:8px 16px;cursor:pointer}
+  .wyniki-table{width:100%;border-collapse:collapse;margin-bottom:24px}
+  .wyniki-table th{font-family:'Special Elite',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;background:var(--noir);color:var(--amber);padding:12px 14px;text-align:left}
+  .wyniki-table td{padding:12px 14px;border-bottom:1px solid rgba(200,132,26,0.1);font-size:15px}
+  .wyniki-table tr:nth-child(even) td{background:rgba(200,132,26,0.04)}
+  .wyniki-table .rank{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--amber);text-align:center}
+  .wyniki-table .patrol-name{font-weight:600}
+  .wyniki-table .score{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--cream)}
+  .wyniki-table .time{font-size:12px;color:var(--faded)}
+  .status-box{background:var(--brown);border:1px solid rgba(200,132,26,0.2);padding:16px;margin-bottom:16px;text-align:center}
+  .status-box p{font-family:'Special Elite',monospace;font-size:11px;letter-spacing:2px;color:var(--faded)}
+  .medal-1{color:#FFD700}
+  .medal-2{color:#C0C0C0}
+  .medal-3{color:#CD7F32}
+  .url-box{background:var(--noir);border:1px solid rgba(200,132,26,0.2);padding:16px;margin-top:16px}
+  .url-label{font-family:'Special Elite',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--amber);margin-bottom:8px;display:block}
+  .url-input{width:100%;background:var(--dark);border:1px solid rgba(200,132,26,0.3);color:var(--cream);font-family:'Special Elite',monospace;font-size:12px;padding:10px;margin-bottom:8px}
+  .url-save{background:var(--forest);color:var(--cream);border:none;font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;padding:8px 20px;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div id="lock">
+  <span class="icon">🔒</span>
+  <h1>Panel Admina</h1>
+  <div class="sub">Gra im. Tomasza Kuzana · Tylko dla kadry</div>
+  <div style="margin-bottom:16px">
+    <label class="lbl">Hasło admina</label>
+    <input type="password" id="admin-pass" placeholder="hasło kadry..."/>
+  </div>
+  <button class="btn" onclick="adminLogin()">WEJDŹ →</button>
+  <div class="err" id="admin-err">⚠ Błędne hasło</div>
+</div>
+
+<div id="panel">
+  <div class="panel-header">
+    <div class="panel-title">📊 Wyniki na żywo</div>
+    <button class="refresh-btn" onclick="loadResults()">↻ Odśwież</button>
+  </div>
+
+  <div class="status-box">
+    <p id="status-msg">Ładowanie wyników...</p>
+  </div>
+
+  <table class="wyniki-table">
+    <thead>
+      <tr>
+        <th style="width:50px">Miejsce</th>
+        <th>Patrol</th>
+        <th>Wynik</th>
+        <th>Czas</th>
+      </tr>
+    </thead>
+    <tbody id="results-body">
+      <tr><td colspan="4" style="text-align:center;color:var(--faded);font-style:italic;padding:20px">Brak wyników — patrole jeszcze nie ukończyły quizu</td></tr>
+    </tbody>
+  </table>
+
+  <div class="url-box">
+    <span class="url-label">⚙ URL Google Apps Script</span>
+    <input type="text" class="url-input" id="script-url-input" placeholder="https://script.google.com/macros/s/.../exec"/>
+    <button class="url-save" onclick="saveUrl()">ZAPISZ URL</button>
+    <p style="font-family:'Special Elite',monospace;font-size:10px;letter-spacing:1px;color:var(--faded);margin-top:8px" id="url-status"></p>
+  </div>
+</div>
+
+</div>
+<script>
+const ADMIN_PASS = "kuzan2026admin";
+let scriptUrl = localStorage.getItem('scriptUrl') || '';
+
+function adminLogin(){
+  const v = document.getElementById('admin-pass').value;
+  if(v === ADMIN_PASS){
+    document.getElementById('lock').style.display='none';
+    document.getElementById('panel').style.display='block';
+    if(scriptUrl) document.getElementById('script-url-input').value = scriptUrl;
+    loadResults();
+  } else {
+    document.getElementById('admin-err').style.display='block';
+  }
+}
+document.getElementById('admin-pass').addEventListener('keypress',e=>{if(e.key==='Enter')adminLogin();});
+
+function saveUrl(){
+  scriptUrl = document.getElementById('script-url-input').value.trim();
+  localStorage.setItem('scriptUrl', scriptUrl);
+  document.getElementById('url-status').textContent = '✓ URL zapisany! Odświeżam wyniki...';
+  setTimeout(loadResults, 500);
+}
+
+function loadResults(){
+  if(!scriptUrl){
+    document.getElementById('status-msg').textContent = '⚠ Wklej URL Google Apps Script poniżej i kliknij ZAPISZ URL';
+    return;
+  }
+  document.getElementById('status-msg').textContent = '⏳ Ładowanie...';
+  fetch(scriptUrl + '?action=get')
+  .then(r=>r.json())
+  .then(data=>{
+    displayResults(data);
+    document.getElementById('status-msg').textContent = '✓ Ostatnia aktualizacja: ' + new Date().toLocaleTimeString('pl-PL');
+  })
+  .catch(()=>{
+    document.getElementById('status-msg').textContent = '⚠ Błąd połączenia — sprawdź URL skryptu';
+  });
+}
+
+function displayResults(data){
+  if(!data || data.length === 0){
+    document.getElementById('results-body').innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--faded);font-style:italic;padding:20px">Brak wyników — patrole jeszcze nie ukończyły quizu</td></tr>';
+    return;
+  }
+  data.sort((a,b) => b.score - a.score);
+  const medals = ['🥇','🥈','🥉','4️⃣'];
+  const html = data.map((r,i) => `
+    <tr>
+      <td class="rank">${medals[i] || (i+1)}</td>
+      <td class="patrol-name">${r.patrol}</td>
+      <td class="score">${r.score}<span style="font-size:14px;color:var(--faded)">/20</span></td>
+      <td class="time">${r.czas || '-'}</td>
+    </tr>`).join('');
+  document.getElementById('results-body').innerHTML = html;
+}
+
+// Auto-odświeżanie co 30 sekund
+setInterval(()=>{ if(document.getElementById('panel').style.display !== 'none') loadResults(); }, 30000);
+</script>
+</body>
+</html>

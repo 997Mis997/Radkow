@@ -3,101 +3,191 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Akta Sprawy — Patrol Orzeł</title>
+<title>Patrol Orzeł — Quiz Harcerski</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Special+Elite&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 <style>
-  :root { --noir:#0d0a06;--dark:#1a1410;--brown:#2c1f0e;--amber:#c8841a;--cream:#f2e8d5;--paper:#e8dcc0;--faded:#b8a888;--red:#8b1a1a; }
+  :root{--noir:#0d0a06;--dark:#1a1410;--brown:#2c1f0e;--amber:#c8841a;--cream:#f2e8d5;--paper:#e8dcc0;--faded:#b8a888;--red:#8b1a1a;--forest:#2d4a2d}
   *{margin:0;padding:0;box-sizing:border-box}
-  body{background:var(--noir);color:var(--cream);font-family:'Crimson Pro',Georgia,serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px}
-  .container{max-width:480px;width:100%}
-  #lock-screen{text-align:center}
+  body{background:var(--noir);color:var(--cream);font-family:'Crimson Pro',Georgia,serif;min-height:100vh;padding:20px}
+  .container{max-width:520px;margin:0 auto}
+  #lock-screen{text-align:center;padding-top:60px}
   .patrol-badge{font-family:'Special Elite',monospace;font-size:11px;letter-spacing:4px;color:var(--amber);text-transform:uppercase;border:1px solid rgba(200,132,26,0.4);display:inline-block;padding:5px 20px;margin-bottom:24px}
   .lock-icon{font-size:48px;margin-bottom:16px;display:block}
   h1{font-family:'Bebas Neue',sans-serif;font-size:52px;letter-spacing:3px;color:var(--cream);line-height:1;margin-bottom:4px}
   h1 span{color:var(--amber)}
   .subtitle{font-family:'Special Elite',monospace;font-size:11px;letter-spacing:3px;color:var(--faded);text-transform:uppercase;margin-bottom:36px}
   .input-label{font-family:'Special Elite',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--amber);display:block;margin-bottom:8px;text-align:left}
-  input[type="text"]{width:100%;background:var(--dark);border:1px solid rgba(200,132,26,0.4);color:var(--cream);font-family:'Special Elite',monospace;font-size:16px;letter-spacing:2px;padding:14px 18px;outline:none;transition:border-color 0.2s}
-  input[type="text"]:focus{border-color:var(--amber)}
-  input[type="text"]::placeholder{color:rgba(184,168,136,0.4);letter-spacing:1px;font-size:13px}
-  .btn{width:100%;background:var(--amber);color:var(--noir);border:none;font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;padding:14px;cursor:pointer;margin-top:4px}
+  input{width:100%;background:var(--dark);border:1px solid rgba(200,132,26,0.4);color:var(--cream);font-family:'Special Elite',monospace;font-size:16px;letter-spacing:2px;padding:14px 18px;outline:none;transition:border-color 0.2s;margin-bottom:4px}
+  input:focus{border-color:var(--amber)}
+  input::placeholder{color:rgba(184,168,136,0.4);font-size:13px}
+  .btn{width:100%;background:var(--amber);color:var(--noir);border:none;font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;padding:14px;cursor:pointer;margin-top:8px}
   .btn:hover{background:#d4a017}
   .error{color:#c44;font-family:'Special Elite',monospace;font-size:12px;letter-spacing:2px;margin-top:10px;display:none;text-align:center}
   .hint{font-size:13px;color:var(--faded);font-style:italic;margin-top:20px;text-align:center;line-height:1.6}
-  #unlocked-screen{display:none}
-  .unlocked-header{text-align:center;margin-bottom:28px}
-  .unlocked-header .check{font-size:48px;display:block;margin-bottom:12px}
-  .unlocked-header h2{font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:3px;color:#4c4;line-height:1}
-  .unlocked-header p{font-family:'Special Elite',monospace;font-size:10px;letter-spacing:3px;color:var(--faded);text-transform:uppercase;margin-top:4px}
-  .card{background:var(--brown);border:1px solid rgba(200,132,26,0.25);padding:24px;margin-bottom:16px}
-  .card-label{font-family:'Special Elite',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--amber);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid rgba(200,132,26,0.2)}
-  .riddle{background:var(--dark);border-left:4px solid var(--amber);padding:20px;margin-bottom:16px}
-  .riddle p{font-size:18px;font-style:italic;line-height:1.7;color:var(--paper)}
-  .riddle .riddle-note{font-family:'Special Elite',monospace;font-size:10px;letter-spacing:2px;color:var(--faded);text-transform:uppercase;margin-top:12px;display:block}
-  .cipher-box{background:rgba(139,26,26,0.15);border:1px solid rgba(139,26,26,0.3);padding:20px;margin-bottom:16px}
-  .cipher-label{font-family:'Special Elite',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#c44;margin-bottom:12px;display:block}
-  .cipher-text{font-family:'Special Elite',monospace;font-size:22px;letter-spacing:4px;color:var(--cream);text-align:center;line-height:1.6}
-  .cipher-type{font-family:'Special Elite',monospace;font-size:10px;letter-spacing:2px;color:var(--faded);text-transform:uppercase;text-align:center;margin-top:8px}
-  .footer-note{text-align:center;margin-top:20px}
-  .footer-note p{font-family:'Special Elite',monospace;font-size:10px;letter-spacing:2px;color:rgba(184,168,136,0.4);text-transform:uppercase}
-  .footer-note .motto{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:4px;color:var(--amber);margin-top:8px;opacity:0.6}
+  #quiz-screen{display:none}
+  .quiz-header{text-align:center;padding:20px 0 16px}
+  .quiz-badge{font-family:'Special Elite',monospace;font-size:10px;letter-spacing:3px;color:var(--amber);text-transform:uppercase;margin-bottom:8px}
+  .progress-bar{background:var(--dark);height:6px;margin-bottom:6px;overflow:hidden}
+  .progress-fill{height:100%;background:var(--amber);transition:width 0.3s;width:0%}
+  .progress-text{font-family:'Special Elite',monospace;font-size:10px;letter-spacing:2px;color:var(--faded);text-align:right}
+  .score-bar{display:flex;justify-content:space-between;align-items:center;padding:10px 0;margin-bottom:8px}
+  .score-current{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--amber);letter-spacing:2px}
+  .score-label{font-family:'Special Elite',monospace;font-size:10px;letter-spacing:2px;color:var(--faded);text-transform:uppercase}
+  .question-card{background:var(--brown);border:1px solid rgba(200,132,26,0.2);border-top:3px solid var(--amber);padding:24px;margin-bottom:16px}
+  .question-num{font-family:'Special Elite',monospace;font-size:10px;letter-spacing:3px;color:var(--amber);text-transform:uppercase;margin-bottom:8px}
+  .question-text{font-size:18px;line-height:1.6;color:var(--paper);margin-bottom:20px;font-weight:600}
+  .answers{display:flex;flex-direction:column;gap:8px}
+  .answer-btn{background:var(--dark);border:1px solid rgba(200,132,26,0.2);color:var(--cream);font-family:'Crimson Pro',serif;font-size:15px;padding:12px 16px;text-align:left;cursor:pointer;transition:all 0.2s;line-height:1.4}
+  .answer-btn:hover{border-color:var(--amber);background:rgba(200,132,26,0.1)}
+  .answer-btn.correct{background:rgba(26,74,26,0.4);border-color:#4a4;color:#8f8}
+  .answer-btn.wrong{background:rgba(139,26,26,0.4);border-color:#a44;color:#f88}
+  .answer-btn:disabled{cursor:not-allowed}
+  .feedback{font-family:'Special Elite',monospace;font-size:11px;letter-spacing:1px;padding:10px 14px;margin-top:8px;display:none}
+  .feedback.correct{background:rgba(26,74,26,0.2);border:1px solid rgba(74,136,74,0.3);color:#8f8}
+  .feedback.wrong{background:rgba(139,26,26,0.2);border:1px solid rgba(139,26,26,0.3);color:#f88}
+  .next-btn{width:100%;background:var(--forest);color:var(--cream);border:none;font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:3px;padding:12px;cursor:pointer;margin-top:12px;display:none}
+  .next-btn:hover{background:#3a6a3a}
+  #result-screen{display:none;text-align:center;padding-top:40px}
+  .result-icon{font-size:56px;display:block;margin-bottom:16px}
+  .result-title{font-family:'Bebas Neue',sans-serif;font-size:48px;letter-spacing:3px;color:var(--amber);line-height:1;margin-bottom:8px}
+  .result-score{font-family:'Bebas Neue',sans-serif;font-size:72px;color:var(--cream);line-height:1;margin-bottom:4px}
+  .result-max{font-family:'Special Elite',monospace;font-size:12px;letter-spacing:3px;color:var(--faded);text-transform:uppercase;margin-bottom:32px}
+  .haslo-box{background:var(--brown);border:2px solid var(--amber);padding:24px;margin-bottom:20px;text-align:left}
+  .haslo-label{font-family:'Special Elite',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--amber);margin-bottom:12px;display:block}
+  .haslo-text{font-family:'Special Elite',monospace;font-size:20px;letter-spacing:3px;color:var(--cream);line-height:1.6;text-align:center}
+  .haslo-sub{font-size:13px;color:var(--faded);font-style:italic;text-align:center;margin-top:8px}
+  .sending-msg{font-family:'Special Elite',monospace;font-size:11px;letter-spacing:2px;color:var(--faded);margin-top:16px}
   @keyframes fadeIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-  #unlocked-screen{animation:fadeIn 0.5s ease both}
+  .fade-in{animation:fadeIn 0.4s ease both}
 </style>
 </head>
 <body>
 <div class="container">
-  <div id="lock-screen">
-    <span class="lock-icon">🔐</span>
-    <div class="patrol-badge">🦅 Patrol Orzeł · Akta Sprawy</div>
-    <h1>Tajemnica<br><span>Zaginionego</span><br>Szyfru</h1>
-    <div class="subtitle">— Gra im. Tomasza Kuzana · ZHP —</div>
-    <div class="input-group" style="margin-bottom:16px">
-      <label class="input-label">Wpisz hasło patrolu</label>
-      <input type="text" id="password-input" placeholder="hasło..." autocomplete="off" autocorrect="off" spellcheck="false" />
-    </div>
-    <button class="btn" onclick="checkPassword()">ODBLOKUJ AKTA →</button>
-    <div class="error" id="error-msg">⚠ Błędne hasło. Sprawdź czy zebrałeś wszystkie poszlaki.</div>
-    <p class="hint">Hasło zdobyłeś na poprzednim punkcie.<br>Wpisz je dokładnie tak jak je zapisałeś.</p>
+
+<div id="lock-screen">
+  <span class="lock-icon">🦅</span>
+  <div class="patrol-badge">Patrol Orzeł · Quiz Harcerski</div>
+  <h1>Quiz<br><span>Harcerski</span></h1>
+  <div class="subtitle">— Gra im. Tomasza Kuzana · ZHP —</div>
+  <div style="margin-bottom:16px">
+    <label class="input-label">Hasło dostępu</label>
+    <input type="password" id="password-input" placeholder="wpisz hasło..."/>
   </div>
-  <div id="unlocked-screen">
-    <div class="unlocked-header">
-      <span class="check">✅</span>
-      <h2>Akta odblokowane!</h2>
-      <p>Patrol Orzeł · Dostęp przyznany</p>
+  <button class="btn" onclick="checkPassword()">WEJDŹ DO QUIZU →</button>
+  <div class="error" id="error-msg">⚠ Błędne hasło</div>
+  <p class="hint">Hasło otrzymałeś od instruktora na tym punkcie.</p>
+</div>
+
+<div id="quiz-screen">
+  <div class="quiz-header">
+    <div class="quiz-badge">🦅 Patrol Orzeł · Quiz Harcerski</div>
+    <div class="score-bar">
+      <div><span class="score-label">Punkty</span><br><span class="score-current" id="score-display">0</span></div>
+      <div style="text-align:right"><span class="score-label">Pytanie</span><br><span class="score-current" id="q-display">1/20</span></div>
     </div>
-    <div class="card">
-      <div class="card-label">📜 Wiadomość od informatora</div>
-      <div class="riddle">
-        <p>„Szyfr leży tam gdzie kamienie pamiętają więcej niż ludzie. Szukaj miejsca gdzie mury mają uszy a historia wrosła w ziemię. Znak znajdziesz przy tym co stoi najdłużej — i nigdzie nie idzie."</p>
-        <span class="riddle-note">🔎 Rozwiąż zagadkę — gdzie iść dalej?</span>
-      </div>
-    </div>
-    <div class="cipher-box">
-      <span class="cipher-label">🔑 Fragment szyfru — zapisz w Karcie Patrolowej</span>
-      <div class="cipher-text">SZYFR CZEKOLADKA<br><br>⌐·⌐ ·⌐·⌐ ⌐·</div>
-      <div class="cipher-type">Szyfr nr 2 z 3 · Czekoladka</div>
-    </div>
-    <div class="footer-note">
-      <p>Gra Terenowa im. Tomasza Kuzana · ZHP</p>
-      <div class="motto">CZUWAJ</div>
-    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+    <div class="progress-text" id="progress-text">0%</div>
   </div>
+  <div id="question-container"></div>
+</div>
+
+<div id="result-screen">
+  <span class="result-icon">🏆</span>
+  <div class="result-title">Quiz ukończony!</div>
+  <div class="result-score" id="final-score">0</div>
+  <div class="result-max">punktów na 20 możliwych</div>
+  <div class="haslo-box">
+    <span class="haslo-label">🔑 Fragment hasła końcowego — zapisz w Karcie Patrolowej!</span>
+    <div class="haslo-text">„są tanie"</div>
+    <div class="haslo-sub">Fragment 2 z 3 · Zbierz pozostałe na trasie</div>
+  </div>
+  <div class="sending-msg" id="sending-msg">📡 Wysyłanie wyników do bazy...</div>
+</div>
+
 </div>
 <script>
-  const HASLO = "orzelszybuje2026";
-  function checkPassword() {
-    const input = document.getElementById('password-input').value.toLowerCase().trim().replace(/\s+/g,'');
-    if (input === HASLO) {
-      document.getElementById('lock-screen').style.display = 'none';
-      document.getElementById('unlocked-screen').style.display = 'block';
-    } else {
-      document.getElementById('error-msg').style.display = 'block';
-      document.getElementById('password-input').style.borderColor = '#c44';
-      setTimeout(() => { document.getElementById('password-input').style.borderColor = 'rgba(200,132,26,0.4)'; }, 1000);
-    }
-  }
-  document.getElementById('password-input').addEventListener('keypress', e => { if(e.key==='Enter') checkPassword(); });
+const HASLO="orzelszybuje2026";
+const PATROL="Orzeł";
+let startTime=0;
+const SCRIPT_URL="https://script.google.com/macros/s/AKfycbxpzulXMQ089KwsAyxPjfwMfGIy6exV0cmmCRK4l1GjZOoMSKsL5MSsinev0VFMyoPQ9A/exec";
+
+const Q=[
+  {p:"Jak brzmi pierwszy punkt Prawa Harcerskiego?",o:["Harcerz służy Bogu i Polsce","Harcerz jest prawdomówny","Harcerz jest pożyteczny","Harcerz kocha przyrodę"],k:1},
+  {p:"Co oznacza SOS w alfabecie Morse'a?",o:["... --- ...","--- ... ---",".. -- ..",".- -. ."],k:0},
+  {p:"Węzeł do łączenia dwóch lin tej samej grubości to:",o:["Węzeł prosty","Węzeł ratowniczy","Węzeł sztych","Węzeł bosmański"],k:0},
+  {p:"W którym roku powstało ZHP?",o:["1918","1910","1920","1945"],k:0},
+  {p:"Jak nazywamy ślad pozostawiony przez zwierzę?",o:["Trop","Deptanina","Ścieżka","Znamię"],k:0},
+  {p:"Azymut to:",o:["Kąt między północą a kierunkiem marszu","Rodzaj węzła","Nazwa obozu","Typ namiotu"],k:0},
+  {p:"Ile stopni wynosi pełny obrót kompasu?",o:["360","180","270","90"],k:0},
+  {p:"Podstawowa jednostka ZHP to:",o:["Drużyna","Hufiec","Chorągiew","Zastęp"],k:0},
+  {p:"Pionierka harcerska to:",o:["Budowanie konstrukcji z drewna i lin","Rodzaj munduru","Śpiewnik harcerski","Typ namiotu"],k:0},
+  {p:"Które drzewo ma korę używaną jako rozpałka?",o:["Brzoza","Dąb","Sosna","Buk"],k:0},
+  {p:"Co sprawdzamy PIERWSZEGO u poszkodowanego?",o:["Przytomność i oddech","Kolor skóry","Temperaturę","Puls na nadgarstku"],k:0},
+  {p:"Proporcja uciśnięć do oddechów w RKO to:",o:["30:2","10:1","15:2","20:2"],k:0},
+  {p:"Trzy kamienie ułożone w trójkąt na szlaku oznaczają:",o:["Tędy droga","Niebezpieczeństwo","Woda blisko","Obóz w pobliżu"],k:0},
+  {p:"Pierwsze słowa Przyrzeczenia Harcerskiego to:",o:["Mam szczerą wolę...","Przyrzekam...","Ślubuję...","Zobowiązuję się..."],k:0},
+  {p:"Które zwierzę zostawia ślad podobny do dłoni człowieka?",o:["Borsuk","Lis","Zając","Sarna"],k:0},
+  {p:"Warta w harcerstwie to:",o:["Pełnienie służby/czuwanie","Rodzaj śpiewu","Typ ogniska","Zabawa obozowa"],k:0},
+  {p:"Sygnał zwoławczy na zbiórkę to:",o:["Capstrzyk","Pobudka","Alarm","Hasło"],k:1},
+  {p:"Szyfr czekoladka opiera się na tabliczce o wymiarach:",o:["3×3","3×4","4×4","2×3"],k:0},
+  {p:"ZHP to skrót od:",o:["Związek Harcerstwa Polskiego","Zrzeszenie Harcerzy Polskich","Związek Harcerzy Polskich","Zbiór Harcerskich Przepisów"],k:0},
+  {p:"Twórcą skautingu na świecie jest:",o:["Robert Baden-Powell","Andrzej Małkowski","Olga Drahonowska","Kazimierz Wyrzykowski"],k:0}
+];
+
+let cur=0,score=0,ans=false;
+
+function checkPassword(){
+  const v=document.getElementById('password-input').value.toLowerCase().trim().replace(/\s+/g,'');
+  if(v===HASLO){document.getElementById('lock-screen').style.display='none';document.getElementById('quiz-screen').style.display='block';startTime=Date.now();showQ();}
+  else{document.getElementById('error-msg').style.display='block';}
+}
+document.getElementById('password-input').addEventListener('keypress',e=>{if(e.key==='Enter')checkPassword();});
+
+function showQ(){
+  ans=false;
+  const q=Q[cur];
+  const pct=Math.round((cur/20)*100);
+  document.getElementById('progress-fill').style.width=pct+'%';
+  document.getElementById('progress-text').textContent=pct+'%';
+  document.getElementById('q-display').textContent=(cur+1)+'/20';
+  document.getElementById('score-display').textContent=score;
+  document.getElementById('question-container').innerHTML=`
+    <div class="question-card fade-in">
+      <div class="question-num">Pytanie ${cur+1} z 20</div>
+      <div class="question-text">${q.p}</div>
+      <div class="answers">${q.o.map((o,i)=>`<button class="answer-btn" onclick="pick(${i})" id="a${i}">${String.fromCharCode(65+i)}. ${o}</button>`).join('')}</div>
+      <div class="feedback" id="fb"></div>
+      <button class="next-btn" id="nb" onclick="next()">${cur<19?'NASTĘPNE PYTANIE →':'ZAKOŃCZ QUIZ →'}</button>
+    </div>`;
+}
+
+function pick(i){
+  if(ans)return;ans=true;
+  const q=Q[cur];
+  document.querySelectorAll('.answer-btn').forEach(b=>b.disabled=true);
+  const fb=document.getElementById('fb');
+  if(i===q.k){score++;document.getElementById('a'+i).classList.add('correct');fb.className='feedback correct';fb.textContent='✓ Poprawnie!';}
+  else{document.getElementById('a'+i).classList.add('wrong');document.getElementById('a'+q.k).classList.add('correct');fb.className='feedback wrong';fb.textContent='✗ Błąd. Poprawna: '+String.fromCharCode(65+q.k)+'. '+q.o[q.k];}
+  fb.style.display='block';
+  document.getElementById('nb').style.display='block';
+  document.getElementById('score-display').textContent=score;
+}
+
+function next(){cur++;if(cur<20)showQ();else showResult();}
+
+function showResult(){
+  document.getElementById('quiz-screen').style.display='none';
+  document.getElementById('result-screen').style.display='block';
+  document.getElementById('final-score').textContent=score;
+  sendResult();
+}
+
+function sendResult(){
+  if(SCRIPT_URL==="WKLEJ_URL_TUTAJ"){document.getElementById('sending-msg').textContent='⚠ Brak konfiguracji — podaj wynik instruktorowi';return;}
+  fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({patrol:PATROL,score:score,max:20,czas:Math.round((Date.now()-startTime)/1000)+'s'})})
+  .then(()=>document.getElementById('sending-msg').textContent='✓ Wynik zapisany!')
+  .catch(()=>document.getElementById('sending-msg').textContent='⚠ Błąd zapisu — podaj wynik instruktorowi');
+}
 </script>
 </body>
 </html>
