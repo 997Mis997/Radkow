@@ -82,7 +82,7 @@
     </tbody>
   </table>
 
-  <div class="url-box">
+  <div class="url-box" style="display:none">
     <span class="url-label">⚙ URL Google Apps Script</span>
     <input type="text" class="url-input" id="script-url-input" placeholder="https://script.google.com/macros/s/.../exec"/>
     <button class="url-save" onclick="saveUrl()">ZAPISZ URL</button>
@@ -93,7 +93,7 @@
 </div>
 <script>
 const ADMIN_PASS = "kuzan2026admin";
-let scriptUrl = localStorage.getItem('scriptUrl') || '';
+let scriptUrl = 'https://script.google.com/macros/s/AKfycbxpzulXMQ089KwsAyxPjfwMfGIy6exV0cmmCRK4l1GjZOoMSKsL5MSsinev0VFMyoPQ9A/exec';
 
 function adminLogin(){
   const v = document.getElementById('admin-pass').value;
