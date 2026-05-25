@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Akta Sprawy — Patrol Dzik</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Special+Elite&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root { --noir:#0d0a06;--dark:#1a1410;--brown:#2c1f0e;--amber:#c8841a;--cream:#f2e8d5;--paper:#e8dcc0;--faded:#b8a888;--red:#8b1a1a; }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--noir);color:var(--cream);font-family:'Crimson Pro',Georgia,serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px}
+  .container{max-width:480px;width:100%}
+  #lock-screen{text-align:center}
+  .patrol-badge{font-family:'Special Elite',monospace;font-size:11px;letter-spacing:4px;color:var(--amber);text-transform:uppercase;border:1px solid rgba(200,132,26,0.4);display:inline-block;padding:5px 20px;margin-bottom:24px}
+  .lock-icon{font-size:48px;margin-bottom:16px;display:block}
+  h1{font-family:'Bebas Neue',sans-serif;font-size:52px;letter-spacing:3px;color:var(--cream);line-height:1;margin-bottom:4px}
+  h1 span{color:var(--amber)}
+  .subtitle{font-family:'Special Elite',monospace;font-size:11px;letter-spacing:3px;color:var(--faded);text-transform:uppercase;margin-bottom:36px}
+  .input-label{font-family:'Special Elite',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--amber);display:block;margin-bottom:8px;text-align:left}
+  input[type="text"]{width:100%;background:var(--dark);border:1px solid rgba(200,132,26,0.4);color:var(--cream);font-family:'Special Elite',monospace;font-size:16px;letter-spacing:2px;padding:14px 18px;outline:none;transition:border-color 0.2s}
+  input[type="text"]:focus{border-color:var(--amber)}
+  input[type="text"]::placeholder{color:rgba(184,168,136,0.4);letter-spacing:1px;font-size:13px}
+  .btn{width:100%;background:var(--amber);color:var(--noir);border:none;font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;padding:14px;cursor:pointer;margin-top:4px}
+  .btn:hover{background:#d4a017}
+  .error{color:#c44;font-family:'Special Elite',monospace;font-size:12px;letter-spacing:2px;margin-top:10px;display:none;text-align:center}
+  .hint{font-size:13px;color:var(--faded);font-style:italic;margin-top:20px;text-align:center;line-height:1.6}
+  #unlocked-screen{display:none}
+  .unlocked-header{text-align:center;margin-bottom:28px}
+  .unlocked-header .check{font-size:48px;display:block;margin-bottom:12px}
+  .unlocked-header h2{font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:3px;color:#4c4;line-height:1}
+  .unlocked-header p{font-family:'Special Elite',monospace;font-size:10px;letter-spacing:3px;color:var(--faded);text-transform:uppercase;margin-top:4px}
+  .card{background:var(--brown);border:1px solid rgba(200,132,26,0.25);padding:24px;margin-bottom:16px}
+  .card-label{font-family:'Special Elite',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--amber);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid rgba(200,132,26,0.2)}
+  .riddle{background:var(--dark);border-left:4px solid var(--amber);padding:20px;margin-bottom:16px}
+  .riddle p{font-size:18px;font-style:italic;line-height:1.7;color:var(--paper)}
+  .riddle .riddle-note{font-family:'Special Elite',monospace;font-size:10px;letter-spacing:2px;color:var(--faded);text-transform:uppercase;margin-top:12px;display:block}
+  .cipher-box{background:rgba(139,26,26,0.15);border:1px solid rgba(139,26,26,0.3);padding:20px;margin-bottom:16px}
+  .cipher-label{font-family:'Special Elite',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#c44;margin-bottom:12px;display:block}
+  .cipher-text{font-family:'Special Elite',monospace;font-size:22px;letter-spacing:4px;color:var(--cream);text-align:center;line-height:1.6}
+  .cipher-type{font-family:'Special Elite',monospace;font-size:10px;letter-spacing:2px;color:var(--faded);text-transform:uppercase;text-align:center;margin-top:8px}
+  .footer-note{text-align:center;margin-top:20px}
+  .footer-note p{font-family:'Special Elite',monospace;font-size:10px;letter-spacing:2px;color:rgba(184,168,136,0.4);text-transform:uppercase}
+  .footer-note .motto{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:4px;color:var(--amber);margin-top:8px;opacity:0.6}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+  #unlocked-screen{animation:fadeIn 0.5s ease both}
+</style>
+</head>
+<body>
+<div class="container">
+  <div id="lock-screen">
+    <span class="lock-icon">🔐</span>
+    <div class="patrol-badge">🐗 Patrol Dzik · Akta Sprawy</div>
+    <h1>Tajemnica<br><span>Zaginionego</span><br>Szyfru</h1>
+    <div class="subtitle">— Gra im. Tomasza Kuzana · ZHP —</div>
+    <div class="input-group" style="margin-bottom:16px">
+      <label class="input-label">Wpisz hasło patrolu</label>
+      <input type="text" id="password-input" placeholder="hasło..." autocomplete="off" autocorrect="off" spellcheck="false" />
+    </div>
+    <button class="btn" onclick="checkPassword()">ODBLOKUJ AKTA →</button>
+    <div class="error" id="error-msg">⚠ Błędne hasło. Sprawdź czy zebrałeś wszystkie poszlaki.</div>
+    <p class="hint">Hasło zdobyłeś na poprzednim punkcie.<br>Wpisz je dokładnie tak jak je zapisałeś.</p>
+  </div>
+  <div id="unlocked-screen">
+    <div class="unlocked-header">
+      <span class="check">✅</span>
+      <h2>Akta odblokowane!</h2>
+      <p>Patrol Dzik · Dostęp przyznany</p>
+    </div>
+    <div class="card">
+      <div class="card-label">📜 Wiadomość od informatora</div>
+      <div class="riddle">
+        <p>„Najsprytniejszy leśniczy chowa rzeczy w miejscu które wszyscy mijają ale nikt nie widzi. Szukaj tam gdzie drogi się krzyżują, gdzie stara nazwa ulicy kryje historię. Znak jest przy tym co wskazuje kierunek — ale sam nigdzie nie idzie."</p>
+        <span class="riddle-note">🔎 Rozwiąż zagadkę — gdzie iść dalej?</span>
+      </div>
+    </div>
+    <div class="cipher-box">
+      <span class="cipher-label">🔑 Fragment szyfru — zapisz w Karcie Patrolowej</span>
+      <div class="cipher-text">GA-DE-RY-PO-LU-KI<br><br>Gd · ckd · Tp</div>
+      <div class="cipher-type">Szyfr nr 1 z 3 · GADERYPOLUKI</div>
+    </div>
+    <div class="footer-note">
+      <p>Gra Terenowa im. Tomasza Kuzana · ZHP</p>
+      <div class="motto">CZUWAJ</div>
+    </div>
+  </div>
+</div>
+<script>
+  const HASLO = "dzikwlesie2026";
+  function checkPassword() {
+    const input = document.getElementById('password-input').value.toLowerCase().trim().replace(/\s+/g,'');
+    if (input === HASLO) {
+      document.getElementById('lock-screen').style.display = 'none';
+      document.getElementById('unlocked-screen').style.display = 'block';
+    } else {
+      document.getElementById('error-msg').style.display = 'block';
+      document.getElementById('password-input').style.borderColor = '#c44';
+      setTimeout(() => { document.getElementById('password-input').style.borderColor = 'rgba(200,132,26,0.4)'; }, 1000);
+    }
+  }
+  document.getElementById('password-input').addEventListener('keypress', e => { if(e.key==='Enter') checkPassword(); });
+</script>
+</body>
+</html>
