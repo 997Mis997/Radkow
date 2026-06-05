@@ -75,7 +75,7 @@
   </div>
   <button class="btn" onclick="checkPassword()">WEJDŹ DO QUIZU →</button>
   <div class="error" id="error-msg">⚠ Błędne hasło</div>
-
+  <p class="hint">Hasło otrzymałeś od instruktora na tym punkcie.</p>
 </div>
 
 <div id="quiz-screen">
@@ -97,9 +97,9 @@
   <div class="result-score" id="final-score">0</div>
   <div class="result-max">punktów na 20 możliwych</div>
   <div class="haslo-box">
-    <span class="haslo-label">🔑 Hasło końcowe — zapisz w Karcie Patrolowej!</span>
-    <div class="haslo-text">„Quiz złamany patrol wraca do bazy"</div>
-
+    <span class="haslo-label">🔑 Fragment hasła końcowego — zapisz w Karcie Patrolowej!</span>
+    <div class="haslo-text">„Szyfr złamany patrol wraca do bazy"</div>
+    <div class="haslo-sub">Fragment 3 z 3 · Zbierz pozostałe na trasie</div>
   </div>
   <div class="sending-msg" id="sending-msg">📡 Wysyłanie wyników do bazy...</div>
 </div>
@@ -109,7 +109,7 @@
 const HASLO="jelenbiegnie2026";
 const PATROL="Jeleń";
 let startTime=0;
-const SCRIPT_URL="https://script.google.com/macros/s/AKfycbxpzulXMQ089KwsAyxPjfwMfGIy6exV0cmmCRK4l1GjZOoMSKsL5MSsinev0VFMyoPQ9A/exec";
+const SCRIPT_URL="https://script.google.com/macros/s/AKfycbw5SvgHuvXDj8TS-Cy2rqB9ARLCDPpIH05zwP_tftvW9DbLyHH5rpNIVfmVZ_9_nKnLcg/exec";
 
 const Q=[
   {p:"Jak brzmi pierwszy punkt Prawa Harcerskiego?",o:["Harcerz sumiennie spełnia swoje obowiązki wynikające z Przyrzeczenia","Na słowie harcerza polegaj jak na Zawiszy","Harcerz jest pożyteczny i niesie pomoc bliźnim","Harcerz postępuje po rycersku"],k:0},
