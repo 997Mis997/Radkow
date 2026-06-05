@@ -92,7 +92,7 @@
 
 </div>
 <script>
-const ADMIN_PASS = "kuzan2026admin";
+const ADMIN_PASS = "Misiek2026admnin";
 let scriptUrl = 'https://script.google.com/macros/s/AKfycbw5SvgHuvXDj8TS-Cy2rqB9ARLCDPpIH05zwP_tftvW9DbLyHH5rpNIVfmVZ_9_nKnLcg/exec';
 
 function adminLogin(){
@@ -134,32 +134,34 @@ function loadResults(){
 
 function displayResults(data){
   if(!data || data.length === 0){
-    document.getElementById('results-body').innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--faded);font-style:italic;padding:20px">Brak meldunków — patrole jeszcze nie zaliczały punktów</td></tr>';
+    document.getElementById('results-body').innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--faded);font-style:italic;padding:20px">Brak wyników</td></tr>';
     return;
   }
   
-  // Grupuj po patrolach
+  // Grupuj po patrolach - sumuj wszystkie wpisy
   const patrols = {};
   data.forEach(r => {
-    if(!patrols[r.patrol]) patrols[r.patrol] = {etapy: {}, total: 0};
-    if(r.etap && r.punkty !== undefined) {
-      patrols[r.patrol].etapy[r.etap] = r.punkty;
-      patrols[r.patrol].total += parseInt(r.punkty) || 0;
+    if(!r.patrol) return;
+    if(!patrols[r.patrol]) patrols[r.patrol] = {etapy: [], total: 0};
+    const pkt = parseInt(r.punkty) || 0;
+    if(pkt > 0 || r.etap) {
+      patrols[r.patrol].etapy.push({etap: r.etap || 'Quiz', pkt: pkt});
+      patrols[r.patrol].total += pkt;
     }
   });
   
   const sorted = Object.entries(patrols).sort((a,b) => b[1].total - a[1].total);
-  const medals = ['🥇','🥈','🥉','4️⃣'];
+  const medals = ['🥇','🥈','🥉','4️⃣','5️⃣'];
   
   const html = sorted.map(([name, d], i) => {
-    const etapy = Object.entries(d.etapy).map(([e,p]) => 
-      `<span style="font-size:11px;background:rgba(200,132,26,0.15);padding:2px 6px;margin:2px;display:inline-block">${e}: ${p}pkt</span>`
+    const etapy = d.etapy.map(e => 
+      `<span style="font-size:11px;background:rgba(200,132,26,0.15);padding:2px 6px;margin:2px;display:inline-block;border-radius:2px">${e.etap}: <b>${e.pkt}pkt</b></span>`
     ).join('');
     return `<tr>
       <td class="rank">${medals[i] || (i+1)}</td>
-      <td class="patrol-name">${name}<br><div style="margin-top:4px">${etapy}</div></td>
+      <td class="patrol-name"><b>${name}</b><br><div style="margin-top:6px;line-height:2">${etapy}</div></td>
       <td class="score">${d.total}</td>
-      <td style="font-size:12px;color:var(--faded)">${Object.keys(d.etapy).length} etapów</td>
+      <td style="font-size:12px;color:var(--faded)">${d.etapy.length} etapów</td>
     </tr>`;
   }).join('');
   
