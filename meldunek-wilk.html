@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meldunek — Patrol Wilk</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Special+Elite&family=Crimson+Pro:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{--noir:#0d0a06;--dark:#1a1410;--brown:#2c1f0e;--amber:#c8841a;--cream:#f2e8d5;--faded:#b8a888;--red:#8b1a1a;--forest:#2d4a2d}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--noir);color:var(--cream);font-family:'Crimson Pro',Georgia,serif;min-height:100vh;padding:20px}
+  .container{max-width:420px;margin:0 auto}
+  #lock{text-align:center;padding-top:50px}
+  .icon{font-size:48px;display:block;margin-bottom:12px}
+  .badge{font-family:'Special Elite',monospace;font-size:10px;letter-spacing:4px;color:var(--amber);text-transform:uppercase;border:1px solid rgba(200,132,26,0.4);display:inline-block;padding:4px 16px;margin-bottom:16px}
+  h1{font-family:'Bebas Neue',sans-serif;font-size:42px;letter-spacing:3px;color:var(--cream);line-height:1;margin-bottom:4px}
+  h1 span{color:var(--amber)}
+  .sub{font-family:'Special Elite',monospace;font-size:10px;letter-spacing:3px;color:var(--faded);text-transform:uppercase;margin-bottom:28px}
+  .lbl{font-family:'Special Elite',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--amber);display:block;margin-bottom:6px;text-align:left}
+  input,select{width:100%;background:var(--dark);border:1px solid rgba(200,132,26,0.4);color:var(--cream);font-family:'Special Elite',monospace;font-size:15px;padding:12px 16px;outline:none;margin-bottom:12px;-webkit-appearance:none}
+  input:focus,select:focus{border-color:var(--amber)}
+  input::placeholder{color:rgba(184,168,136,0.3);font-size:12px}
+  select option{background:var(--dark)}
+  .btn{width:100%;background:var(--amber);color:var(--noir);border:none;font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:3px;padding:14px;cursor:pointer;margin-top:4px}
+  .btn:hover{background:#d4a017}
+  .btn-forest{background:var(--forest);color:var(--cream)}
+  .btn-forest:hover{background:#3a6a3a}
+  .err{color:#c44;font-family:'Special Elite',monospace;font-size:11px;margin-top:8px;display:none;text-align:center;letter-spacing:1px}
+  #panel{display:none}
+  .panel-header{text-align:center;padding:20px 0 24px;border-bottom:1px solid rgba(200,132,26,0.2);margin-bottom:20px}
+  .panel-header .icon{font-size:36px;margin-bottom:8px}
+  .panel-header h2{font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:3px;color:var(--amber)}
+  .panel-header p{font-family:'Special Elite',monospace;font-size:10px;letter-spacing:2px;color:var(--faded);text-transform:uppercase}
+  .etap-select{background:var(--brown);border:1px solid rgba(200,132,26,0.2);padding:16px;margin-bottom:16px}
+  .etap-select h3{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;color:var(--cream);margin-bottom:12px}
+  .punkty-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:12px}
+  .pkt-btn{background:var(--dark);border:1px solid rgba(200,132,26,0.2);color:var(--cream);font-family:'Bebas Neue',sans-serif;font-size:18px;padding:10px 4px;cursor:pointer;text-align:center;transition:all 0.15s}
+  .pkt-btn:hover{border-color:var(--amber);background:rgba(200,132,26,0.15)}
+  .pkt-btn.selected{background:var(--amber);color:var(--noir);border-color:var(--amber)}
+  .punkty-custom{display:flex;gap:8px;align-items:center;margin-bottom:12px}
+  .punkty-custom input{margin-bottom:0;flex:1}
+  .punkty-custom span{font-family:'Special Elite',monospace;font-size:10px;color:var(--faded);white-space:nowrap;letter-spacing:1px}
+  .selected-pts{font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--amber);text-align:center;margin:8px 0}
+  .selected-pts span{font-family:'Special Elite',monospace;font-size:11px;color:var(--faded);letter-spacing:2px;display:block;font-size:10px}
+  .notatka{margin-bottom:12px}
+  .success{display:none;text-align:center;padding:24px;background:rgba(26,74,26,0.2);border:1px solid rgba(74,136,74,0.3);margin-top:12px}
+  .success .s-icon{font-size:40px;display:block;margin-bottom:8px}
+  .success h3{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;color:#4c4}
+  .success p{font-family:'Special Elite',monospace;font-size:10px;letter-spacing:2px;color:var(--faded);margin-top:4px}
+  .history{margin-top:20px}
+  .history h4{font-family:'Special Elite',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--amber);margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid rgba(200,132,26,0.2)}
+  .history-item{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05);font-size:14px}
+  .history-item .etap-name{color:var(--faded)}
+  .history-item .pts{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--amber)}
+  .total-bar{background:var(--brown);padding:12px 16px;margin-top:12px;display:flex;justify-content:space-between;align-items:center}
+  .total-bar span{font-family:'Special Elite',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--faded)}
+  .total-bar .total{font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--cream)}
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- EKRAN LOGOWANIA -->
+<div id="lock">
+  <span class="icon">🐺</span>
+  <div class="badge">Patrol Wilk · Meldunek Instruktora</div>
+  <h1>PUNKT<br><span>KONTROLNY</span></h1>
+  <div class="sub">— Gra im. Tomasza Kuzana · ZHP —</div>
+  <div style="margin-bottom:12px">
+    <label class="lbl">Hasło instruktora</label>
+    <input type="password" id="pass" placeholder="hasło..."/>
+  </div>
+  <button class="btn" onclick="login()">ZALOGUJ →</button>
+  <div class="err" id="err">⚠ Błędne hasło</div>
+</div>
+
+<!-- PANEL MELDUNKU -->
+<div id="panel">
+  <div class="panel-header">
+    <span class="icon">🐺</span>
+    <h2>PATROL WILK</h2>
+    <p>Wpisz punkty za zaliczone zadanie</p>
+  </div>
+
+  <div class="etap-select">
+    <h3>1. Wybierz etap</h3>
+    <label class="lbl">Etap na trasie</label>
+    <select id="etap-select" onchange="updateEtap()">
+      <option value="">— wybierz etap —</option>
+      <option value="Start">Start — Domki Skibin</option>
+      <option value="A">Punkt A — Ślady i znaki</option>
+      <option value="B">Punkt B — Gra w sznura (Rynek)</option>
+      <option value="C">Punkt C — Pierwsza pomoc</option>
+      <option value="D">Punkt D — Quiz online</option>
+      <option value="E">Punkt E — Kompas</option>
+      <option value="META">META — Ognisko</option>
+    </select>
+
+    <h3>2. Przyznaj punkty</h3>
+    <div class="punkty-grid" id="pkt-grid">
+      <div class="pkt-btn" onclick="selectPkt(0)">0</div>
+      <div class="pkt-btn" onclick="selectPkt(5)">5</div>
+      <div class="pkt-btn" onclick="selectPkt(10)">10</div>
+      <div class="pkt-btn" onclick="selectPkt(15)">15</div>
+      <div class="pkt-btn" onclick="selectPkt(20)">20</div>
+      <div class="pkt-btn" onclick="selectPkt(25)">25</div>
+      <div class="pkt-btn" onclick="selectPkt(30)">30</div>
+      <div class="pkt-btn" onclick="selectPkt(35)">35</div>
+      <div class="pkt-btn" onclick="selectPkt(40)">40</div>
+      <div class="pkt-btn" onclick="selectPkt(45)">45</div>
+    </div>
+    <div class="punkty-custom">
+      <span>Lub wpisz:</span>
+      <input type="number" id="custom-pts" placeholder="0" min="0" max="100" oninput="selectCustom(this.value)"/>
+      <span>pkt</span>
+    </div>
+    <div class="selected-pts" id="selected-pts">
+      —
+      <span>PRZYZNANE PUNKTY</span>
+    </div>
+
+    <h3>3. Notatka (opcjonalnie)</h3>
+    <div class="notatka">
+      <input type="text" id="notatka" placeholder="np. świetna robota, brak węzła..."/>
+    </div>
+
+    <button class="btn" onclick="wyslij()">WYŚLIJ MELDUNEK →</button>
+  </div>
+
+  <div class="success" id="success">
+    <span class="s-icon">✅</span>
+    <h3>Meldunek wysłany!</h3>
+    <p id="success-msg">Punkty zapisane w systemie</p>
+    <button class="btn btn-forest" style="margin-top:12px" onclick="resetForm()">KOLEJNY ETAP →</button>
+  </div>
+
+  <div class="history" id="history" style="display:none">
+    <h4>📊 Historia meldunków — Patrol Wilk</h4>
+    <div id="history-list"></div>
+    <div class="total-bar">
+      <span>Łącznie punktów</span>
+      <span class="total" id="total-pts">0</span>
+    </div>
+  </div>
+</div>
+
+</div>
+<script>
+const HASLO = "instruktor2026";
+const PATROL = "Wilk";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxpzulXMQ089KwsAyxPjfwMfGIy6exV0cmmCRK4l1GjZOoMSKsL5MSsinev0VFMyoPQ9A/exec";
+
+let selectedPts = null;
+let localHistory = JSON.parse(localStorage.getItem('wilk_history') || '[]');
+
+function login(){
+  const v = document.getElementById('pass').value;
+  if(v === HASLO){
+    document.getElementById('lock').style.display='none';
+    document.getElementById('panel').style.display='block';
+    renderHistory();
+  } else {
+    document.getElementById('err').style.display='block';
+  }
+}
+document.getElementById('pass').addEventListener('keypress',e=>{if(e.key==='Enter')login();});
+
+function selectPkt(n){
+  selectedPts = n;
+  document.querySelectorAll('.pkt-btn').forEach(b=>b.classList.remove('selected'));
+  event.target.classList.add('selected');
+  document.getElementById('custom-pts').value = '';
+  document.getElementById('selected-pts').innerHTML = n+'<span>PRZYZNANE PUNKTY</span>';
+}
+
+function selectCustom(v){
+  selectedPts = parseInt(v) || 0;
+  document.querySelectorAll('.pkt-btn').forEach(b=>b.classList.remove('selected'));
+  document.getElementById('selected-pts').innerHTML = selectedPts+'<span>PRZYZNANE PUNKTY</span>';
+}
+
+function updateEtap(){}
+
+function wyslij(){
+  const etap = document.getElementById('etap-select').value;
+  const notatka = document.getElementById('notatka').value;
+  if(!etap){ alert('Wybierz etap!'); return; }
+  if(selectedPts === null){ alert('Wybierz punkty!'); return; }
+
+  const data = {
+    patrol: PATROL,
+    etap: etap,
+    punkty: selectedPts,
+    notatka: notatka,
+    czas: Math.round(Date.now()/1000),
+    typ: 'meldunek'
+  };
+
+  fetch(SCRIPT_URL, {
+    method:'POST',
+    mode:'no-cors',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify(data)
+  });
+
+  localHistory.push(data);
+  localStorage.setItem('wilk_history', JSON.stringify(localHistory));
+
+  document.getElementById('etap-select').value='';
+  document.getElementById('success-msg').textContent = etap+' · '+selectedPts+' pkt zapisane!';
+  document.getElementById('success').style.display='block';
+  document.getElementById('etap-select').parentElement.style.display='none';
+  renderHistory();
+}
+
+function resetForm(){
+  selectedPts = null;
+  document.getElementById('selected-pts').innerHTML = '—<span>PRZYZNANE PUNKTY</span>';
+  document.getElementById('custom-pts').value='';
+  document.getElementById('notatka').value='';
+  document.getElementById('success').style.display='none';
+  document.getElementById('etap-select').parentElement.style.display='block';
+  document.querySelectorAll('.pkt-btn').forEach(b=>b.classList.remove('selected'));
+}
+
+function renderHistory(){
+  if(localHistory.length === 0) return;
+  document.getElementById('history').style.display='block';
+  const total = localHistory.filter(h=>h.typ==='meldunek').reduce((s,h)=>s+h.punkty,0);
+  document.getElementById('total-pts').textContent = total;
+  document.getElementById('history-list').innerHTML = localHistory.filter(h=>h.typ==='meldunek').map(h=>
+    `<div class="history-item"><span class="etap-name">Punkt ${h.etap}</span><span class="pts">${h.punkty} pkt</span></div>`
+  ).join('');
+}
+
+renderHistory();
+</script>
+</body>
+</html>

@@ -72,9 +72,9 @@
     <thead>
       <tr>
         <th style="width:50px">Miejsce</th>
-        <th>Patrol</th>
-        <th>Wynik</th>
-        <th>Czas</th>
+        <th>Patrol + Etapy</th>
+        <th>Łącznie</th>
+        <th>Etapów</th>
       </tr>
     </thead>
     <tbody id="results-body">
@@ -134,18 +134,35 @@ function loadResults(){
 
 function displayResults(data){
   if(!data || data.length === 0){
-    document.getElementById('results-body').innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--faded);font-style:italic;padding:20px">Brak wyników — patrole jeszcze nie ukończyły quizu</td></tr>';
+    document.getElementById('results-body').innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--faded);font-style:italic;padding:20px">Brak meldunków — patrole jeszcze nie zaliczały punktów</td></tr>';
     return;
   }
-  data.sort((a,b) => b.score - a.score);
+  
+  // Grupuj po patrolach
+  const patrols = {};
+  data.forEach(r => {
+    if(!patrols[r.patrol]) patrols[r.patrol] = {etapy: {}, total: 0};
+    if(r.etap && r.punkty !== undefined) {
+      patrols[r.patrol].etapy[r.etap] = r.punkty;
+      patrols[r.patrol].total += parseInt(r.punkty) || 0;
+    }
+  });
+  
+  const sorted = Object.entries(patrols).sort((a,b) => b[1].total - a[1].total);
   const medals = ['🥇','🥈','🥉','4️⃣'];
-  const html = data.map((r,i) => `
-    <tr>
+  
+  const html = sorted.map(([name, d], i) => {
+    const etapy = Object.entries(d.etapy).map(([e,p]) => 
+      `<span style="font-size:11px;background:rgba(200,132,26,0.15);padding:2px 6px;margin:2px;display:inline-block">${e}: ${p}pkt</span>`
+    ).join('');
+    return `<tr>
       <td class="rank">${medals[i] || (i+1)}</td>
-      <td class="patrol-name">${r.patrol}</td>
-      <td class="score">${r.score}<span style="font-size:14px;color:var(--faded)">/20</span></td>
-      <td class="time">${r.czas || '-'}</td>
-    </tr>`).join('');
+      <td class="patrol-name">${name}<br><div style="margin-top:4px">${etapy}</div></td>
+      <td class="score">${d.total}</td>
+      <td style="font-size:12px;color:var(--faded)">${Object.keys(d.etapy).length} etapów</td>
+    </tr>`;
+  }).join('');
+  
   document.getElementById('results-body').innerHTML = html;
 }
 
